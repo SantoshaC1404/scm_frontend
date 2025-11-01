@@ -1,9 +1,11 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 // Register User
 export const registerUser = async (userData) => {
   try {
-    const responce = await fetch(`${BASE_URL}/auth/register`, {
+    console.log("📤 Sending user data to backend:", userData);
+    console.log("🌐 API URL:", `${BASE_URL}/signup`);
+    const responce = await fetch(`${BASE_URL}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -15,7 +17,9 @@ export const registerUser = async (userData) => {
       const error = await responce.json();
       throw new Error(error.message || "Failed to register user");
     }
-    return await responce.json();
+    const result = await responce.json();
+    console.log("✅ Backend response:", result);
+    return result;
   } catch (error) {
     throw error;
   }

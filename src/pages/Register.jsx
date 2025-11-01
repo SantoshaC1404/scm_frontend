@@ -1,74 +1,94 @@
 import React, { useState } from "react";
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { registerUser } from "../api/authService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    phoneNumber: "",
+    about: "",
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Sending payload:", formData);
 
-    // Basic validation
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match ❌");
-      return;
-    }
+    try {
+      const response = await registerUser(formData);
+      console.log("Backend Response:", response);
+      toast.success("Account created successfully! 🎉", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "dark",
+      });
 
-    // Simulate API call
-    setTimeout(() => {
-      toast.success("Account created successfully! 🎉");
       setFormData({
-        username: "",
+        name: "",
         email: "",
         password: "",
-        confirmPassword: "",
+        phoneNumber: "",
       });
-    }, 1000);
+    } catch (error) {
+      console.error("Error while registering:", error);
+      toast.error(error.message || "Registration failed!", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "dark",
+      });
+    }
+  };
+
+  // Placeholder for Google Sign-In
+  const handleGoogleSignIn = () => {
+    toast.info("Google sign-in coming soon! 🚀");
+    // Later you can integrate Firebase or OAuth flow here
+  };
+
+  // Placeholder for Github Sign-In
+  const handleGithubSignIn = () => {
+    toast.info("Google sign-in coming soon! 🚀");
+    // Later you can integrate Firebase or OAuth flow here
   };
 
   return (
-    <section
-      id="register"
-      className="flex flex-col items-center justify-center pt-20 px-4 pb-20" // match navbar bg
-    >
+    <section className="mt-12 flex flex-col items-center justify-center bg-gradient-to-br px-4 ">
       <ToastContainer />
 
-      {/* Section Title */}
-      <div className="text-center mb-10">
-        <h2 className="text-4xl font-bold text-white">CREATE ACCOUNT</h2>
-        <div className="w-32 h-1 bg-purple-500 mx-auto mt-4"></div>
-        <p className="text-gray-400 mt-4 text-lg font-semibold">
-          Join us and get started with your account today!
-        </p>
-      </div>
-
-      {/* Register Form */}
-      <div className="w-full max-w-md bg-[#0d081f]/90 p-6 rounded-lg shadow-lg border border-gray-700 backdrop-blur-md">
-        <h3 className="text-xl font-semibold text-white text-center mb-4">
-          Register <span className="ml-1">📝</span>
-        </h3>
+      <div className=" backdrop-blur-lg border border-gray-700 p-8 rounded-2xl shadow-lg w-full max-w-md">
+        {/* Register title */}
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold text-white">Create Account</h2>
+          <div className="w-50 h-1 bg-purple-500 mx-auto mt-4"></div>
+          <p className="text-gray-400 mt-4 text-lg font-semibold">
+            Join us today — it’s quick and easy!
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+          {/* name input */}
           <input
             type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-md bg-[#131025] text-white border border-gray-600 focus:outline-none focus:border-purple-500"
+            className="w-full p-3 mb-8 rounded-md bg-[#131025] text-white border border-gray-600 focus:outline-none focus:border-purple-500"
           />
 
+          {/* email input */}
           <input
             type="email"
             name="email"
@@ -76,9 +96,10 @@ const Register = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-md bg-[#131025] text-white border border-gray-600 focus:outline-none focus:border-purple-500"
+            className="w-full p-3 mb-8 rounded-md bg-[#131025] text-white border border-gray-600 focus:outline-none focus:border-purple-500"
           />
 
+          {/* password input */}
           <input
             type="password"
             name="password"
@@ -86,35 +107,57 @@ const Register = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-md bg-[#131025] text-white border border-gray-600 focus:outline-none focus:border-purple-500"
+            className="w-full p-3 mb-8 rounded-md bg-[#131025] text-white border border-gray-600 focus:outline-none focus:border-purple-500"
           />
 
+          {/* phone input */}
           <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
+            type="text"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            value={formData.phoneNumber}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-md bg-[#131025] text-white border border-gray-600 focus:outline-none focus:border-purple-500"
+            className="w-full p-3 mb-8 rounded-md bg-[#131025] text-white border border-gray-600 focus:outline-none focus:border-purple-500"
           />
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 py-3 text-white font-semibold rounded-md hover:opacity-90 transition cursor-pointer"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 py-3 text-white font-semibold rounded-md hover:border-purple-500 transition cursor-pointer"
           >
             Register
           </button>
         </form>
 
+        {/* Divider */}
+        <div className="flex items-center my-6">
+          <div className="flex-1 h-px bg-gray-700"></div>
+          <span className="text-gray-400 px-3 text-sm">or continue with</span>
+          <div className="flex-1 h-px bg-gray-700"></div>
+        </div>
+
+        {/* Google Sign-In */}
+        <button
+          onClick={() => toast.info("Google Sign-In coming soon 🚀")}
+          className="w-full flex items-center justify-center gap-2 bg-[#131025] border border-gray-600 py-3 rounded-md text-white hover:border-purple-500 transition"
+        >
+          <FcGoogle size={24} className="mr-3" />
+          Sign in with Google
+        </button>
+
+        {/* Github Sign-In */}
+        <button
+          onClick={() => toast.info("Github Sign-In coming soon 🚀")}
+          className="w-full flex items-center justify-center gap-2 bg-[#131025] border border-gray-600 py-3 rounded-md text-white hover:border-purple-500 transition mt-4"
+        >
+          <FaGithub size={24} className="mr-3" />
+          Sign in with Github
+        </button>
+
         <p className="text-center text-gray-400 mt-6 text-sm">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-purple-400 hover:text-purple-300 font-semibold"
-          >
-            Login
+          <a href="/login" className="text-purple-400 hover:underline">
+            Log In
           </a>
         </p>
       </div>
