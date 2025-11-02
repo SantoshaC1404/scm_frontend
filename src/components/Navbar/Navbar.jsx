@@ -17,19 +17,51 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-[#050414]/60 backdrop-blur-xl border-b border-white/10 shadow-lg z-50">
       <div className="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
-        <div className="font-bold text-lg text-white">SCM</div>
+        <div className="bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-2 rounded-md hover:opacity-90 transition">
+          SCM
+        </div>
 
         <ul className="hidden md:flex space-x-8 text-gray-200 font-medium">
           <li>
-            <a href="/home">Home</a>
+            <a
+              href="/home"
+              className="relative px-3 py-2 rounded-md transition duration-300 
+                 hover:text-white 
+                 before:absolute before:inset-0 before:rounded-md 
+                 before:bg-gradient-to-r before:from-purple-600 before:to-pink-500 
+                 before:opacity-0 hover:before:opacity-100 
+                 before:-z-10"
+            >
+              Home
+            </a>
           </li>
           {!isLoggedIn && (
             <>
               <li>
-                <a href="/register">Register</a>
+                <a
+                  href="/register"
+                  className="relative px-3 py-2 rounded-md transition duration-300 
+                 hover:text-white 
+                 before:absolute before:inset-0 before:rounded-md 
+                 before:bg-gradient-to-r before:from-purple-600 before:to-pink-500 
+                 before:opacity-0 hover:before:opacity-100 
+                 before:-z-10"
+                >
+                  Register
+                </a>
               </li>
               <li>
-                <a href="/login">Login</a>
+                <a
+                  href="/login"
+                  className="relative px-3 py-2 rounded-md transition duration-300 
+                 hover:text-white 
+                 before:absolute before:inset-0 before:rounded-md 
+                 before:bg-gradient-to-r before:from-purple-600 before:to-pink-500 
+                 before:opacity-0 hover:before:opacity-100 
+                 before:-z-10"
+                >
+                  Login
+                </a>
               </li>
             </>
           )}
@@ -37,7 +69,12 @@ const Navbar = () => {
             <li>
               <button
                 onClick={handleLogout}
-                className="bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-2 rounded-md hover:opacity-90 transition"
+                className="relative px-3 py-2 rounded-md transition duration-300 
+                 hover:text-white 
+                 before:absolute before:inset-0 before:rounded-md 
+                 before:bg-gradient-to-r before:from-purple-600 before:to-pink-500 
+                 before:opacity-0 hover:before:opacity-100 
+                 before:-z-10"
               >
                 Logout
               </button>

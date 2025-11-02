@@ -11,7 +11,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="text-white py-8 ">
+    <footer className="text-white py-8 bg-[#050414]/60 backdrop-blur-xl border-t border-white/20 mt-10">
       <div className="container mx-auto text-center">
         {/* Name / Logo */}
         <h2 className="text-xl font-semibold text-purple-500">Santosha C</h2>
