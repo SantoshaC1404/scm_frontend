@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { UserPlus, Edit3, Users, X } from "lucide-react";
+import { UserPlus, Edit3, Users } from "lucide-react";
+import AddContactModal from "../components/AddContactModal";
+import EditContactModal from "../components/EditContactModal";
+import AllContactsModal from "../components/AllContactsModal"; // ✅ Import AllContactsModal
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false); // Add Contact Modal
+  const [editModalOpen, setEditModalOpen] = useState(false); // Edit Contact Modal
+  const [allModalOpen, setAllModalOpen] = useState(false); // ✅ All Contacts Modal
+  const [selectedContact, setSelectedContact] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) navigate("/login");
   }, [navigate]);
 
-  // Animation variants
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: (i) => ({
@@ -22,21 +27,24 @@ const Dashboard = () => {
     }),
   };
 
+  // Determine if any modal is open (for blur effect)
+  const anyModalOpen = modalOpen || editModalOpen || allModalOpen;
+
   return (
     <section
       className={`relative min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black flex flex-col items-center justify-center px-6 text-white transition-all duration-300 ${
-        modalOpen ? "overflow-hidden" : ""
+        anyModalOpen ? "overflow-hidden" : ""
       }`}
     >
-      {/* Background blur overlay (only when modal open) */}
-      {modalOpen && (
-        <div className="absolute inset-0 backdrop-blur-lg bg-black/50 z-25"></div>
+      {/* Background blur overlay when modal is open */}
+      {anyModalOpen && (
+        <div className="absolute inset-0 backdrop-blur-md bg-black/40 z-25"></div>
       )}
 
       {/* Dashboard Content */}
       <div
         className={`relative z-20 transition-all duration-300 ${
-          modalOpen ? "pointer-events-none select-none" : ""
+          anyModalOpen ? "pointer-events-none select-none" : ""
         }`}
       >
         {/* Heading */}
@@ -76,7 +84,14 @@ const Dashboard = () => {
             initial="hidden"
             animate="visible"
             variants={cardVariants}
-            onClick={() => navigate("/edit-contact")}
+            onClick={() => {
+              setSelectedContact({
+                name: "John Doe",
+                number: "9876543210",
+                image: "",
+              });
+              setEditModalOpen(true);
+            }}
             className="group cursor-pointer bg-gray-800/40 backdrop-blur-lg border border-gray-700 hover:border-pink-500 rounded-2xl p-8 shadow-xl hover:shadow-pink-500/20 transition-all duration-300 transform hover:-translate-y-2"
           >
             <div className="flex flex-col items-center text-center">
@@ -96,7 +111,7 @@ const Dashboard = () => {
             initial="hidden"
             animate="visible"
             variants={cardVariants}
-            onClick={() => navigate("/all-contacts")}
+            onClick={() => setAllModalOpen(true)} // ✅ Open All Contacts Modal
             className="group cursor-pointer bg-gray-800/40 backdrop-blur-lg border border-gray-700 hover:border-blue-500 rounded-2xl p-8 shadow-xl hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-2"
           >
             <div className="flex flex-col items-center text-center">
@@ -112,61 +127,28 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Add Contact Modal */}
-      {modalOpen && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="fixed inset-0 z-30 flex items-center justify-center"
-        >
-          <div className="relative bg-gray-900/95 border border-purple-700 rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
-            {/* Close button */}
-            <button
-              onClick={() => setModalOpen(false)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-white transition"
-            >
-              <X className="w-6 h-6" />
-            </button>
+      {/* ✅ Add Contact Modal */}
+      {modalOpen && <AddContactModal setModalOpen={setModalOpen} />}
 
-            <h2 className="text-2xl font-bold mb-6 text-center text-purple-300">
-              Add New Contact
-            </h2>
+      {/* ✅ Edit Contact Modal */}
+      {editModalOpen && (
+        <EditContactModal
+          isOpen={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          contact={selectedContact}
+          onSave={(updatedContact) => {
+            console.log("Updated Contact:", updatedContact);
+            setEditModalOpen(false);
+          }}
+        />
+      )}
 
-            <form className="space-y-5">
-              <div>
-                <label className="block text-gray-300 mb-1">Name</label>
-                <input
-                  type="text"
-                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 mb-1">Number</label>
-                <input
-                  type="tel"
-                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 mb-1">Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition"
-              >
-                Save Contact
-              </button>
-            </form>
-          </div>
-        </motion.div>
+      {/* ✅ All Contacts Modal */}
+      {allModalOpen && (
+        <AllContactsModal
+          isOpen={allModalOpen}
+          onClose={() => setAllModalOpen(false)}
+        />
       )}
     </section>
   );
