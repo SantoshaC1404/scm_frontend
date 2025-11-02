@@ -3,20 +3,16 @@ import { loginUser } from "../api/authService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const { login } = useAuth(); // ✅ use context
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -25,24 +21,14 @@ const Login = () => {
 
     try {
       const response = await loginUser(formData);
-      console.log("Login response:", response);
-
       if (response?.token) {
-        // ✅ Save token before navigating
-        localStorage.setItem("token", response.token);
-
+        login(response.token); // ✅ update context
         toast.success("Login successful!");
-        console.log("Navigating to dashboard...");
-
-        // ✅ Add a short delay to ensure state and storage update
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 300);
+        navigate("/dashboard");
       } else {
         toast.error("Invalid response from server");
       }
     } catch (error) {
-      console.error("Login error:", error);
       toast.error(error.message || "Login failed!");
     } finally {
       setLoading(false);

@@ -46,3 +46,30 @@ export const loginUser = async (userData) => {
     throw error;
   }
 };
+
+// Logout User
+export const logoutUser = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found");
+
+  try {
+    const response = await fetch(`${BASE_URL}/auth/logout`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // 👈 important if cookies/session used
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Logout failed");
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
