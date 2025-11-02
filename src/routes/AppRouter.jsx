@@ -10,6 +10,7 @@ import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import Layout from "../layouts/Layout";
+import Dashboard from "../pages/Dashboard";
 
 const AppRouter = () => {
   return (
@@ -18,10 +19,10 @@ const AppRouter = () => {
         <Routes>
           {/* Redirect default "/" to "/home" */}
           <Route path="/" element={<Navigate to="/home" replace />} />
-
           <Route path="/home" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />{" "}
         </Routes>
       </Layout>
     </Router>
